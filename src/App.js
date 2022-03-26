@@ -8,7 +8,7 @@ import Navbar from './components/navbar';
 function App() {
   const [posts, setPosts] = useState([]);
 
-  useEffect(async () => {
+  useEffect(() => {
     const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
     getDocs(q).then((querySnapshot) => {
       const data = querySnapshot.docs.map((doc) => ({
