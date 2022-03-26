@@ -10,7 +10,7 @@ function App() {
 
   useEffect(async () => {
     const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
-    const result = await getDocs(q).then((querySnapshot) => {
+    getDocs(q).then((querySnapshot) => {
       const data = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -22,7 +22,7 @@ function App() {
 
   useEffect(() => {
     const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
-    const snapshot = onSnapshot(q, (querySnapshot) => {
+    onSnapshot(q, (querySnapshot) => {
       const _posts = [];
 
       querySnapshot.forEach((doc) => {

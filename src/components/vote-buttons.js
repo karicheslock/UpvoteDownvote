@@ -5,8 +5,8 @@ import db from '../lib/firebase-config';
 import { doc, setDoc } from 'firebase/firestore'; 
 
 function VoteButtons({ post }) {
-    const [isVoting, setIsVoting] = useState(false);
     const [votedPosts, setVotedPosts] = useState([]);
+    const [isVoting, setIsVoting] = useState(false);
 
     useEffect(() => {
         const votesFromLocalStorage = localStorage.getItem('votes');
@@ -59,7 +59,10 @@ function VoteButtons({ post }) {
 
         handleDisablingOfVoting(post.id);
 
-        setIsVoting(true);
+        if (!isVoting){
+            setIsVoting(true);
+        }
+        
     };
 
     const checkIfPostIsAlreadyVoted = () => {
