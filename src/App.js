@@ -9,15 +9,17 @@ function App() {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
-    getDocs(q).then((querySnapshot) => {
-      const data = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setPosts(data);
-    });
+    async function fetchData() {
+      const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
+      await getDocs(q).then((querySnapshot) => {
+        const data = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setPosts(data);
+      })
+    }
+    
   }, []);
 
   useEffect(() => {
