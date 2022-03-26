@@ -1,24 +1,52 @@
-import logo from './logo.svg';
-import './App.css';
+import { Container, Flex, Spinner, VStack, Box } from '@chakra-ui/core';
+import React, { useEffect, useState } from 'react';
+import Post from './components/post';
+import db from './lib/firebase-config';
+import { query, getDocs, collection, orderBy, onSnapshot } from 'firebase/firestore';
+import Navbar from './components/navbar';
 
 function App() {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(async () => {
+    const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
+    const result = await getDocs(q).then((querySnapshot) => {
+      const data = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setPosts(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
+    const snapshot = onSnapshot(q, (querySnapshot) => {
+      const _posts = [];
+
+      querySnapshot.forEach((doc) => {
+        _posts.push({
+          id: doc.id,
+          ...doc.data(),
+        });
+      });
+
+      setPosts(_posts);
+    });
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Navbar />
+      <Container maxW='lg' centerContent p={8}>
+        <VStack spacing={8} w='100%'>
+          {posts.map((post) => (
+            <Post post={post} key={post.id} />
+          ))}
+        </VStack>
+      </Container>
+    </>
   );
 }
 
